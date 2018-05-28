@@ -1,0 +1,29 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+  
+    // Overrides editor colors and font style from the currently selected color theme.
+    "editor.tokenColorCustomizations": {
+        "[Visual Studio Light]": {
+            "numbers": "#FF0000",
+            "comments": "#008000"
+        }
+    },
+    "workbench.colorCustomizations": {
+        "[Visual Studio Light]": {
+            "editorLineNumber.foreground": "#cccccc"
+        }
+    },
+    "files.associations": {
+        "iostream": "cpp",
+        "__bit_reference": "cpp",
+        "algorithm": "cpp",
+        "bitset": "cpp",
+        "chrono": "cpp",
+        "__config": "cpp",
+        "__nullptr": "cpp",
+        "exception": "cpp",
+        "initializer_list": "cpp",
+        "stdexcept": "cpp",
+        "typeinfo": "cpp"
+    }
+}
