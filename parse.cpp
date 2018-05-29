@@ -13,6 +13,7 @@
 #include <iostream>
 #include <string>
 #include <array>
+#include <vector>
 
 // For Methods 3 and 4
 #include <curl/curl.h>
@@ -22,6 +23,9 @@
 // HTML Parsing
 #include <tidy/tidy.h>
 #include <tidy/buffio.h>
+
+
+//using namespace std;
 
 
 // Method 2
@@ -67,9 +71,19 @@ std::ostream & operator<< (
 
 
 
+// Curl and Tidy
 bool found_td = false;
 int column = 1;
-char mnemonic[128]; 
+char mnemonic[128];
+
+struct Dep {
+    std::string mnemonic;
+    std::string summary;
+    std::string link;
+} dep;
+
+std::vector<Dep> deps;
+
 
 
 /* curl write callback, to fill tidy's input buffer...  */
@@ -130,11 +144,16 @@ void dumpNode(TidyDoc doc, TidyNode tnod, int indent)
                     printf("%s\n", buf.bp);// ? (char *)buf.bp : "");
                     strcpy(mnemonic, (char*)buf.bp);
                     column = 2;
+
+                    dep.mnemonic = (char*)buf.bp;
                          
                 } else
                 if (column == 2) {  // summary
                     printf("%s\n\n", buf.bp ? (char *)buf.bp : "");
-                    column = 1;         
+                    column = 1;
+
+                    dep.summary = (char*)buf.bp;
+                    deps.push_back(dep);       
                 }
          
             }
@@ -149,7 +168,10 @@ void dumpNode(TidyDoc doc, TidyNode tnod, int indent)
                 strcat(mnemonic, (char *)buf.bp);
                 printf("%s\n", mnemonic);
                 mnemonic[0] = '\0';
-            }   
+            }
+
+
+           
 
         
            
