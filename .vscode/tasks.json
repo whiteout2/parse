@@ -6,7 +6,7 @@
         {
             "label": "Build and Run",
             "type": "shell",
-            "command": "g++ -g -Wall -std=c++1z parse.cpp HTTPDownloader.cpp -o parse -lcurl && ./parse",
+            "command": "g++ -g -Wall -std=c++1z parse.cpp HTTPDownloader.cpp -o parse -lcurl -ltidy && ./parse",
             "group": {
                 "kind": "build",
                 "isDefault": true
