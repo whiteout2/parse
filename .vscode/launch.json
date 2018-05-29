@@ -5,7 +5,7 @@
             "name": "C++ Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceRoot}/class3",
+            "program": "${workspaceRoot}/parse",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
@@ -40,7 +40,7 @@
             "name": "C++ Attach",
             "type": "cppdbg",
             "request": "attach",
-            "program": "${workspaceRoot}/class3.cpp",
+            "program": "${workspaceRoot}/parse",
             "processId": "command:",
             "linux": {
                 "MIMode": "gdb",

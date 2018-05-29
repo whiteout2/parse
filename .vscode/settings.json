@@ -24,6 +24,7 @@
         "exception": "cpp",
         "initializer_list": "cpp",
         "stdexcept": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "ostream": "cpp"
     }
 }

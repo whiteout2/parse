@@ -212,7 +212,7 @@ CMPSD
 Compare String Operands
 
 CMPSD
- (1)
+CMPSD (1)
 Compare Scalar Double-Precision Floating-Point Value
 
 CMPSQ
@@ -972,11 +972,11 @@ MOV
 Move
 
 MOV
- (1)
+MOV (1)
 Move to/from Control Registers
 
 MOV
- (2)
+MOV (2)
 Move to/from Debug Registers
 
 MOVAPD
@@ -1049,7 +1049,7 @@ MOVQ
 Move Doubleword/Move Quadword
 
 MOVQ
- (1)
+MOVQ (1)
 Move Quadword
 
 MOVQ2DQ
@@ -1065,7 +1065,7 @@ MOVSD
 Move Data from String to String
 
 MOVSD
- (1)
+MOVSD (1)
 Move or Merge Scalar Double-Precision Floating-Point Value
 
 MOVSHDUP
@@ -2203,28 +2203,28 @@ VGATHERDPD
 Gather Packed DP FP Values Using Signed Dword/Qword Indices
 
 VGATHERDPD
- (1)
+VGATHERDPD (1)
 Gather Packed Single, Packed Double with Signed Dword
 
 VGATHERDPS
 Gather Packed SP FP values Using Signed Dword/Qword Indices
 
 VGATHERDPS
- (1)
+VGATHERDPS (1)
 Gather Packed Single, Packed Double with Signed Dword
 
 VGATHERQPD
 Gather Packed DP FP Values Using Signed Dword/Qword Indices
 
 VGATHERQPD
- (1)
+VGATHERQPD (1)
 Gather Packed Single, Packed Double with Signed Qword Indices
 
 VGATHERQPS
 Gather Packed SP FP values Using Signed Dword/Qword Indices
 
 VGATHERQPS
- (1)
+VGATHERQPS (1)
 Gather Packed Single, Packed Double with Signed Qword Indices
 
 VGETEXPPD
@@ -2447,28 +2447,28 @@ VPGATHERDD
 Gather Packed Dword Values Using Signed Dword/Qword Indices
 
 VPGATHERDD
- (1)
+VPGATHERDD (1)
 Gather Packed Dword, Packed Qword with Signed Dword Indices
 
 VPGATHERDQ
 Gather Packed Dword, Packed Qword with Signed Dword Indices
 
 VPGATHERDQ
- (1)
+VPGATHERDQ (1)
 Gather Packed Qword Values Using Signed Dword/Qword Indices
 
 VPGATHERQD
 Gather Packed Dword Values Using Signed Dword/Qword Indices
 
 VPGATHERQD
- (1)
+VPGATHERQD (1)
 Gather Packed Dword, Packed Qword with Signed Qword Indices
 
 VPGATHERQQ
 Gather Packed Qword Values Using Signed Dword/Qword Indices
 
 VPGATHERQQ
- (1)
+VPGATHERQQ (1)
 Gather Packed Dword, Packed Qword with Signed Qword Indices
 
 VPLZCNTD
@@ -2982,7 +2982,7 @@ VMRESUME
 Launch/Resume Virtual Machine
 
 VMRESUME
- (1)
+VMRESUME (1)
 Resume Virtual Machine
 
 VMWRITE

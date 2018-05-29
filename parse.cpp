@@ -1,8 +1,8 @@
 
 // TEST: how easy is it in C++ to read the x86 instruction reference index.html file from
 // internet, parse it, and print out the mnemonic-summary pairs to stdout
-// TypeScript needs require and htmlparser2
-// C++/C needs curl and ?
+// TypeScript needs require and htmlparser2 (install with npm)
+// C++/C needs curl and tidy (both preinstalled on macOS)
 // Do it also in C and time them to see which one is fastest: C++/C/TypeScript?
 //
 //std::dload("https://www.felixcloutier.com/x86/index.html", "~/Downloads/x86.html");
@@ -69,6 +69,7 @@ std::ostream & operator<< (
 
 bool found_td = false;
 int column = 1;
+char mnemonic[128]; 
 
 
 /* curl write callback, to fill tidy's input buffer...  */
@@ -118,27 +119,40 @@ void dumpNode(TidyDoc doc, TidyNode tnod, int indent)
             //printf("%*.*s\n", indent, indent, buf.bp ? (char *)buf.bp : "");
 
             // HELL: tidyNodeGetText puts \n at end of buf
+            // FYL2X gaat fout en geeft html codes ipv text 
+
+            // Get rid of trailing \n
+            if (buf.bp) buf.bp[strlen((char*)buf.bp)-1] = '\0';
             
             //////
             if (found_td) {
-                if (column == 1) {
-                    printf("%s", buf.bp ? (char *)buf.bp : "");
-                    column = 2;      
-
+                if (column == 1) {  // mnemonic                  
+                    printf("%s\n", buf.bp);// ? (char *)buf.bp : "");
+                    strcpy(mnemonic, (char*)buf.bp);
+                    column = 2;
+                         
                 } else
-                if (column == 2) {
-                    printf("%s\n", buf.bp ? (char *)buf.bp : "");
-                    column =1;
-                } 
-                found_td = false;          
+                if (column == 2) {  // summary
+                    printf("%s\n\n", buf.bp ? (char *)buf.bp : "");
+                    column = 1;         
+                }
+         
             }
-            
-            // kludge
+            found_td = false;
+
+
+            // kludge for (1)
             if (NULL != strstr((char *)buf.bp, "(1)") ||
                 NULL != strstr((char *)buf.bp, "(2)")
             ) {
-                 printf("%s", buf.bp ? (char *)buf.bp : "");
-            }
+                //printf("%s\n", buf.bp);
+                strcat(mnemonic, (char *)buf.bp);
+                printf("%s\n", mnemonic);
+                mnemonic[0] = '\0';
+            }   
+
+        
+           
 
             tidyBufFree(&buf);
         }
@@ -196,49 +210,49 @@ int main(int argc, char** argv)
     TidyBuffer tidy_errbuf = {0};
     int err;
 
-    if (true)
+  
+    curl = curl_easy_init();
+    curl_easy_setopt(curl, CURLOPT_URL, "https://www.felixcloutier.com/x86/index.html");
+    curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, curl_errbuf);
+    curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0L);
+    curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_cb);
+
+    tdoc = tidyCreate();
+    tidyOptSetBool(tdoc, TidyForceOutput, yes); /* try harder */
+    tidyOptSetInt(tdoc, TidyWrapLen, 4096);
+    tidySetErrorBuffer(tdoc, &tidy_errbuf);
+    tidyBufInit(&docbuf);
+
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &docbuf);
+    err = curl_easy_perform(curl);
+    if (!err)
     {
-        curl = curl_easy_init();
-        curl_easy_setopt(curl, CURLOPT_URL, "https://www.felixcloutier.com/x86/index.html");
-        curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, curl_errbuf);
-        curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0L);
-        curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_cb);
-
-        tdoc = tidyCreate();
-        tidyOptSetBool(tdoc, TidyForceOutput, yes); /* try harder */
-        tidyOptSetInt(tdoc, TidyWrapLen, 4096);
-        tidySetErrorBuffer(tdoc, &tidy_errbuf);
-        tidyBufInit(&docbuf);
-
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &docbuf);
-        err = curl_easy_perform(curl);
-        if (!err)
+        err = tidyParseBuffer(tdoc, &docbuf); /* parse the input */
+        if (err >= 0)
         {
-            err = tidyParseBuffer(tdoc, &docbuf); /* parse the input */
+            err = tidyCleanAndRepair(tdoc); /* fix any problems */
             if (err >= 0)
             {
-                err = tidyCleanAndRepair(tdoc); /* fix any problems */
+                err = tidyRunDiagnostics(tdoc); /* load tidy error buffer */
                 if (err >= 0)
                 {
-                    err = tidyRunDiagnostics(tdoc); /* load tidy error buffer */
-                    if (err >= 0)
-                    {
-                        dumpNode(tdoc, tidyGetRoot(tdoc), 0);    /* walk the tree */
-                        fprintf(stderr, "%s\n", tidy_errbuf.bp); /* show errors */
-                    }
+                    dumpNode(tdoc, tidyGetRoot(tdoc), 0);    /* walk the tree */
+                    fprintf(stderr, "%s\n", tidy_errbuf.bp); /* show errors */
                 }
             }
         }
-        else
-            fprintf(stderr, "%s\n", curl_errbuf);
-
-        /* clean-up */
-        curl_easy_cleanup(curl);
-        tidyBufFree(&docbuf);
-        tidyBufFree(&tidy_errbuf);
-        tidyRelease(tdoc);
-        return err;
     }
+    else
+        fprintf(stderr, "%s\n", curl_errbuf);
+
+    /* clean-up */
+    curl_easy_cleanup(curl);
+    tidyBufFree(&docbuf);
+    tidyBufFree(&tidy_errbuf);
+    tidyRelease(tdoc);
+    
+    return err;
+   
 
 }
