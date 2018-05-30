@@ -73,6 +73,7 @@ std::ostream & operator<< (
 
 // Curl and Tidy
 bool found_td = false;
+//bool found_a = false;
 int column = 1;
 char mnemonic[128];
 
@@ -123,6 +124,17 @@ void dumpNode(TidyDoc doc, TidyNode tnod, int indent)
                 found_td = true;
                 //printf("Found TD!");
             }
+            if (0 == strcmp(name, "a"))
+            {
+                //found_a = true;
+                //printf("Found A!");
+                TidyAttr attr;
+                attr = tidyAttrFirst(child);
+                //printf(tidyAttrName(attr));
+                //printf(tidyAttrValue(attr));
+                dep.link = tidyAttrValue(attr);
+                deps.push_back(dep);
+            }
         }
         else
         {
@@ -161,8 +173,6 @@ void dumpNode(TidyDoc doc, TidyNode tnod, int indent)
 
             // Hier zit prob. Je mag niet zomaar td afzetten. Dat mag een /td alleen.
             // Echter tidy kan die niet parsen. Zo kunnen we dus niet goed kludgen.
-            // Zeker als we <a href> ook moeten zoeken wordt dat duidelijk: found_td mag pas
-            // uit bij </td>.
             found_td = false;
 
 
@@ -176,14 +186,6 @@ void dumpNode(TidyDoc doc, TidyNode tnod, int indent)
                 dep.mnemonic = mnemonic;
                 mnemonic[0] = '\0';
             }
-
-           
-           
-
-
-           
-
-        
            
 
             tidyBufFree(&buf);
@@ -304,7 +306,8 @@ int main(int argc, char** argv)
             i.summary.replace(pos, needle.length(), "–");
         }
         
-        std::cout << i.mnemonic << " - " << i.summary << std::endl;
+        //std::cout << i.mnemonic << " - " << i.summary << std::endl;
+        std::cout << i.mnemonic << std::endl << i.summary << std::endl << i.link << std::endl << std::endl;
     }
 
     
