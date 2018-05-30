@@ -118,7 +118,7 @@ DPPS - Dot Product of Packed Single Precision Floating-Point Values
 EMMS - Empty MMX Technology State
 ENTER - Make Stack Frame for Procedure Parameters
 EXTRACTPS - Extract Packed Floating-Point Values
-F2XM1 - Compute 2x&acirc;&euro;&ldquo;1
+F2XM1 - Compute 2x–1
 FABS - Absolute Value
 FADD - Add
 FADDP - Add
@@ -204,8 +204,8 @@ FXCH - Exchange Register Contents
 FXRSTOR - Restore x87 FPU, MMX, XMM, and MXCSR State
 FXSAVE - Save x87 FPU, MMX Technology, and SSE State
 FXTRACT - Extract Exponent and Significand
-FYL2X - Compute y &acirc;&circ;&mdash; log2x
-FYL2XP1 - Compute y &acirc;&circ;&mdash; log2(x +1)
+FYL2X - Compute y * log2x
+FYL2XP1 - Compute y * log2(x +1)
 HADDPD - Packed Double-FP Horizontal Add
 HADDPS - Packed Single-FP Horizontal Add
 HLT - Halt

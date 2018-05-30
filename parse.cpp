@@ -175,8 +175,9 @@ void dumpNode(TidyDoc doc, TidyNode tnod, int indent)
                 //printf("%s\n", mnemonic);
                 dep.mnemonic = mnemonic;
                 mnemonic[0] = '\0';
-            } 
-               
+            }
+
+           
            
 
 
@@ -285,8 +286,25 @@ int main(int argc, char** argv)
 
 
     // Print deps
-    for(std::vector<Dep>::iterator it = deps.begin(); it != deps.end(); ++it) {
-        std::cout << it->mnemonic << " - " << it->summary << std::endl;
+    //for(std::vector<Dep>::iterator it = deps.begin(); it != deps.end(); ++it) {
+    //for(auto it = deps.begin(); it != deps.end(); ++it) {
+    //    std::cout << it->mnemonic << " - " << it->summary << std::endl;
+    //}
+    for (auto i : deps) {
+        // kludge for FYL2X/FYL2XP1 &acirc;&circ;&mdash;
+        std::string needle = "&acirc;&circ;&mdash;";
+        size_t pos = i.summary.find(needle);
+        if (pos != std::string::npos) {
+            i.summary.replace(pos, needle.length(), "*");
+        }
+        // kludge for F2XM1 &acirc;&euro;&ldquo;
+        needle = "&acirc;&euro;&ldquo;";
+        pos = i.summary.find(needle);
+        if (pos != std::string::npos) {
+            i.summary.replace(pos, needle.length(), "–");
+        }
+        
+        std::cout << i.mnemonic << " - " << i.summary << std::endl;
     }
 
     
