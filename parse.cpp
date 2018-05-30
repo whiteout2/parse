@@ -141,34 +141,43 @@ void dumpNode(TidyDoc doc, TidyNode tnod, int indent)
             //////
             if (found_td) {
                 if (column == 1) {  // mnemonic                  
-                    printf("%s\n", buf.bp);// ? (char *)buf.bp : "");
+                    //printf("%s\n", buf.bp);// ? (char *)buf.bp : "");
                     strcpy(mnemonic, (char*)buf.bp);
                     column = 2;
-
+                    
                     dep.mnemonic = (char*)buf.bp;
                          
                 } else
                 if (column == 2) {  // summary
-                    printf("%s\n\n", buf.bp ? (char *)buf.bp : "");
+                    //printf("%s\n\n", buf.bp ? (char *)buf.bp : "");
                     column = 1;
 
                     dep.summary = (char*)buf.bp;
-                    deps.push_back(dep);       
+                    deps.push_back(dep);
+                    //std::cerr << "Pushback.\n";     
                 }
          
             }
+
+            // Hier zit prob. Je mag niet zomaar td afzetten. Dat mag een /td alleen.
+            // Echter tidy kan die niet parsen. Zo kunnen we dus niet goed kludgen.
+            // Zeker als we <a href> ook moeten zoeken wordt dat duidelijk: found_td mag pas
+            // uit bij </td>.
             found_td = false;
 
 
-            // kludge for (1)
+            // kludge for (1)            
             if (NULL != strstr((char *)buf.bp, "(1)") ||
                 NULL != strstr((char *)buf.bp, "(2)")
             ) {
                 //printf("%s\n", buf.bp);
                 strcat(mnemonic, (char *)buf.bp);
-                printf("%s\n", mnemonic);
+                //printf("%s\n", mnemonic);
+                dep.mnemonic = mnemonic;
                 mnemonic[0] = '\0';
-            }
+            } 
+               
+           
 
 
            
@@ -273,8 +282,16 @@ int main(int argc, char** argv)
     tidyBufFree(&docbuf);
     tidyBufFree(&tidy_errbuf);
     tidyRelease(tdoc);
+
+
+    // Print deps
+    for(std::vector<Dep>::iterator it = deps.begin(); it != deps.end(); ++it) {
+        std::cout << it->mnemonic << " - " << it->summary << std::endl;
+    }
+
     
-    return err;
+    //return err;
+    return 0;
    
 
 }
