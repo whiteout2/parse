@@ -5,7 +5,7 @@
 // C++/C needs curl and tidy (both preinstalled on macOS)
 // Do it also in C and time them to see which one is fastest: C++/C/TypeScript?
 //
-//dload("https://www.felixcloutier.com/x86/index.html", "~/Downloads/x86.html");
+//std::dload("https://www.felixcloutier.com/x86/index.html", "~/Downloads/x86.html");
 //////////////////////////////
 
 #include "HTTPDownloader.hpp"
@@ -25,18 +25,18 @@
 #include <tidy/buffio.h>
 
 
-using namespace std;
+//using namespace std;
 
 
 // Method 2
 // NOTE: When curl output is redirected to a file it also outputs some statistics.
 // Use --silent option.
-string exec(const char* cmd) 
+std::string exec(const char* cmd) 
 {
-    array<char, 128> buffer;
-    string result;
-    shared_ptr<FILE> pipe(popen(cmd, "r"), pclose);
-    if (!pipe) throw runtime_error("popen() failed!");
+    std::array<char, 128> buffer;
+    std::string result;
+    std::shared_ptr<FILE> pipe(popen(cmd, "r"), pclose);
+    if (!pipe) throw std::runtime_error("popen() failed!");
     while (!feof(pipe.get())) {
         if (fgets(buffer.data(), 128, pipe.get()) != nullptr)
             result += buffer.data();
@@ -51,21 +51,21 @@ size_t curlCbToStream (
     char* buffer,
     size_t nitems,
     size_t size,
-    ostream * sout
+    std::ostream * sout
 ) 
 {
     *sout << buffer;
     return nitems * size;
 }
 
-ostream & operator<< (
-    ostream & sout,
+std::ostream & operator<< (
+    std::ostream & sout,
     CURL* request
 )
 {
-    curl_easy_setopt(request, CURLOPT_WRITEDATA, & sout);
-    curl_easy_setopt(request, CURLOPT_WRITEFUNCTION, curlCbToStream);
-    curl_easy_perform(request);
+    ::curl_easy_setopt(request, CURLOPT_WRITEDATA, & sout);
+    ::curl_easy_setopt(request, CURLOPT_WRITEFUNCTION, curlCbToStream);
+    ::curl_easy_perform(request);
     return sout;
 }
 
@@ -79,12 +79,12 @@ int td = 0;
 char mnemonic[128];
 
 struct Dep {
-    string mnemonic;
-    string summary;
-    string link;
+    std::string mnemonic;
+    std::string summary;
+    std::string link;
 } dep;
 
-vector<Dep> deps;
+std::vector<Dep> deps;
 
 
 
@@ -174,7 +174,7 @@ void dumpNode(TidyDoc doc, TidyNode tnod, int indent)
 
                     dep.summary = (char*)buf.bp;
                     deps.push_back(dep);
-                    //cerr << "Pushback.\n";
+                    //std::cerr << "Pushback.\n";
 
                     // reset
                     td = 0;
@@ -215,41 +215,41 @@ int main(int argc, char** argv)
     // Method 1:
     // The clean OO way
     //HTTPDownloader downloader;
-    //string content = downloader.download("https://www.felixcloutier.com/x86/index.html");
-    //string content = downloader.download("www.example.com");
-    //cout << content << endl;
+    //std::string content = downloader.download("https://www.felixcloutier.com/x86/index.html");
+    //std::string content = downloader.download("www.example.com");
+    //std::cout << content << std::endl;
 
     // Method 2:
     // System call
     // But still need to get output in string (using > file)
     //system("curl www.example.com");
     // Or via popen
-    //cout << exec("curl --silent www.example.com");
+    //std::cout << exec("curl --silent www.example.com");
 
     // Method 3:
     // C++11 lambdas (less code but confusing)
-    // string resultBody { };
+    // std::string resultBody { };
     // void* curl = curl_easy_init();
     // curl_easy_setopt(curl, CURLOPT_URL, "www.example.com");
     // curl_easy_setopt(curl, CURLOPT_WRITEDATA, &resultBody);
     // curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, static_cast<size_t (*)(char*, size_t, size_t, void*)>(
     //     [](char* ptr, size_t size, size_t nmemb, void* resultBody){
-    //         *(static_cast<string*>(resultBody)) += string {ptr, size * nmemb};
+    //         *(static_cast<std::string*>(resultBody)) += std::string {ptr, size * nmemb};
     //         return size * nmemb;
     //     }
     // ));
     //
     // CURLcode curlResult = curl_easy_perform(curl);
     // if (curlResult != CURLE_OK) {
-    //     cerr << "curl_easy_perform() failed: ", curl_easy_strerror(curlResult);
+    //     std::cerr << "curl_easy_perform() failed: ", curl_easy_strerror(curlResult);
     // }
-    // cout << "RESULT BODY:\n" << resultBody << endl;
+    // std::cout << "RESULT BODY:\n" << resultBody << std::endl;
 
     // Method 4:
     // Nice one!
     //void* curl = curl_easy_init();
     //curl_easy_setopt(curl, CURLOPT_URL, "www.example.com");
-    //cout << curl;
+    //std::cout << curl;
 
 
     ///////////////////////////
@@ -304,26 +304,26 @@ int main(int argc, char** argv)
 
 
     // Print deps
-    //for(vector<Dep>::iterator it = deps.begin(); it != deps.end(); ++it) {
+    //for(std::vector<Dep>::iterator it = deps.begin(); it != deps.end(); ++it) {
     //for(auto it = deps.begin(); it != deps.end(); ++it) {
-    //    cout << it->mnemonic << " - " << it->summary << endl;
+    //    std::cout << it->mnemonic << " - " << it->summary << std::endl;
     //}
     for (auto i : deps) {
         // kludge for FYL2X/FYL2XP1 &acirc;&circ;&mdash;
-        string needle = "&acirc;&circ;&mdash;";
+        std::string needle = "&acirc;&circ;&mdash;";
         size_t pos = i.summary.find(needle);
-        if (pos != string::npos) {
+        if (pos != std::string::npos) {
             i.summary.replace(pos, needle.length(), "*");
         }
         // kludge for F2XM1 &acirc;&euro;&ldquo;
         needle = "&acirc;&euro;&ldquo;";
         pos = i.summary.find(needle);
-        if (pos != string::npos) {
+        if (pos != std::string::npos) {
             i.summary.replace(pos, needle.length(), "–");
         }
         
-        //cout << i.mnemonic << " - " << i.summary << endl;
-        cout << i.mnemonic << endl << i.summary << endl << i.link << endl << endl;
+        //std::cout << i.mnemonic << " - " << i.summary << std::endl;
+        std::cout << i.mnemonic << std::endl << i.summary << std::endl << i.link << std::endl << std::endl;
     }
 
     
