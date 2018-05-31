@@ -72,9 +72,9 @@ std::ostream & operator<< (
 
 
 // Curl and Tidy
-bool found_td = false;
+//bool found_td = false;
 //bool found_a = false;
-int column = 1;
+//int column = 1;
 int td = 0;
 char mnemonic[128];
 
@@ -118,6 +118,12 @@ void dumpNode(TidyDoc doc, TidyNode tnod, int indent)
             //                         : printf(" ");
             // }
             // printf(">\n");
+
+            // TEST: Tidy never finds end nodes only start nodes
+            // Is eigenlijk ook niet nodig
+            // if (tidyNodeGetType(child) == TidyNode_End) {
+            //     printf(name);
+            // }
 
             ///////
             if (0 == strcmp(name, "td"))
@@ -180,6 +186,10 @@ void dumpNode(TidyDoc doc, TidyNode tnod, int indent)
             // Hier zit prob. Je mag niet zomaar td afzetten. Dat mag een /td alleen.
             // Echter tidy kan die niet parsen. Zo kunnen we dus niet goed kludgen.
             //found_td = false;
+
+            // NOTE: Tidy kan weldegelijk end tags parsen. Zie tidy.h
+            //  case TidyNode_Start:
+            //  case TidyNode_End:
 
 
             // kludge for (1)            
