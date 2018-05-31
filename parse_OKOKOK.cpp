@@ -75,7 +75,6 @@ std::ostream & operator<< (
 bool found_td = false;
 //bool found_a = false;
 int column = 1;
-int td = 0;
 char mnemonic[128];
 
 struct Dep {
@@ -122,12 +121,10 @@ void dumpNode(TidyDoc doc, TidyNode tnod, int indent)
             ///////
             if (0 == strcmp(name, "td"))
             {
-                //found_td = true;
-                td++;
-                if (td > 2) td = 0;
+                found_td = true;
                 //printf("Found TD!");
             }
-            if (0 == strcmp(name, "a") && td == 1)
+            if (0 == strcmp(name, "a"))
             {
                 //found_a = true;
                 //printf("Found A!");
@@ -136,6 +133,7 @@ void dumpNode(TidyDoc doc, TidyNode tnod, int indent)
                 //printf(tidyAttrName(attr));
                 //printf(tidyAttrValue(attr));
                 dep.link = tidyAttrValue(attr);
+                deps.push_back(dep);
             }
         }
         else
@@ -153,45 +151,41 @@ void dumpNode(TidyDoc doc, TidyNode tnod, int indent)
             if (buf.bp) buf.bp[strlen((char*)buf.bp)-1] = '\0';
             
             //////
-            //if (found_td) {
-                if (td == 1) {  // mnemonic                  
+            if (found_td) {
+                if (column == 1) {  // mnemonic                  
                     //printf("%s\n", buf.bp);// ? (char *)buf.bp : "");
-                    strcat(mnemonic, (char*)buf.bp);
-                    //column = 2;
+                    strcpy(mnemonic, (char*)buf.bp);
+                    column = 2;
                     
-                    dep.mnemonic = mnemonic;
+                    dep.mnemonic = (char*)buf.bp;
                          
-                }
-                if (td == 2) {  // summary
+                } else
+                if (column == 2) {  // summary
                     //printf("%s\n\n", buf.bp ? (char *)buf.bp : "");
-                    //column = 1;
+                    column = 1;
 
                     dep.summary = (char*)buf.bp;
                     deps.push_back(dep);
-                    //std::cerr << "Pushback.\n";
-
-                    // reset
-                    td = 0;
-                    mnemonic[0] = '\0';    
+                    //std::cerr << "Pushback.\n";     
                 }
          
-            //}
+            }
 
             // Hier zit prob. Je mag niet zomaar td afzetten. Dat mag een /td alleen.
             // Echter tidy kan die niet parsen. Zo kunnen we dus niet goed kludgen.
-            //found_td = false;
+            found_td = false;
 
 
             // kludge for (1)            
-            // if (NULL != strstr((char *)buf.bp, "(1)") ||
-            //     NULL != strstr((char *)buf.bp, "(2)")
-            // ) {
-            //     //printf("%s\n", buf.bp);
-            //     strcat(mnemonic, (char *)buf.bp);
-            //     //printf("%s\n", mnemonic);
-            //     dep.mnemonic = mnemonic;
-            //     mnemonic[0] = '\0';
-            // }
+            if (NULL != strstr((char *)buf.bp, "(1)") ||
+                NULL != strstr((char *)buf.bp, "(2)")
+            ) {
+                //printf("%s\n", buf.bp);
+                strcat(mnemonic, (char *)buf.bp);
+                //printf("%s\n", mnemonic);
+                dep.mnemonic = mnemonic;
+                mnemonic[0] = '\0';
+            }
            
 
             tidyBufFree(&buf);
