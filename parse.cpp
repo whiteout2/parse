@@ -190,6 +190,7 @@ void dumpNode(TidyDoc doc, TidyNode tnod, int indent)
             // NOTE: Tidy kan weldegelijk end tags parsen. Zie tidy.h
             //  case TidyNode_Start:
             //  case TidyNode_End:
+            // NONO: TidyNode_End wordt nooit gevonden en is een loze waarde.
 
 
             // kludge for (1)            
@@ -325,7 +326,7 @@ int main(int argc, char** argv)
         //cout << i.mnemonic << " - " << i.summary << endl;
         cout << i.mnemonic << endl << i.summary << endl << i.link << endl << endl;
     }
-
+    
     
     //return err;
     return 0;
