@@ -1,7 +1,7 @@
 
 // TEST: how easy is it in C++ to read the x86 instruction reference index.html file from
 // the internet, parse it, and print out the mnemonic-summary pairs to stdout
-// TypeScript needs require and htmlparser2 (install with npm)
+// TypeScript needs request and htmlparser2 (install with npm)
 // C++/C needs curl and tidy (both preinstalled on macOS)
 // Do it also in C and time them to see which one is fastest: C++/C/TypeScript?
 //
